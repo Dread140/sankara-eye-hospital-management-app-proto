@@ -13,6 +13,8 @@ let db;
 export const getDb = async () => {
   if (db) return db;
 
+  await fs.mkdir(path.resolve(rootDir, 'server/data'), { recursive: true });
+
   db = await open({
     filename: path.resolve(rootDir, 'server/data/hospital.db'),
     driver: sqlite3.Database
