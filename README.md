@@ -430,10 +430,3 @@ Tests → Logs
 
 MIT License
 
----
-
-# 🏥 Sankara EyeCare Pro
-
-Enterprise Workflow Automation for Eye Hospitals.
-
-This documentation contains everything needed for developers or AI to build the complete system.
