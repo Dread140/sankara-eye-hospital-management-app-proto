@@ -110,6 +110,7 @@ Copy `token` and use as `Authorization: Bearer <token>`.
 - `POST /api/auth/login`
 - `POST /api/patients`
 - `GET /api/patients`
+- `POST /api/tests`
 - `PUT /api/tests/start/:id`
 - `PUT /api/tests/complete/:id`
 - `GET /api/tests/waiting`

@@ -20,21 +20,28 @@ export const createPatient = async (req, res) => {
   const db = await getDb();
   const row = await db.get('SELECT COALESCE(MAX(token_number), 0) + 1 AS nextToken FROM patients');
 
-  const result = await db.run(
-    `INSERT INTO patients (uhid, name, age, gender, phone, token_number, priority_level, current_stage, status)
-     VALUES (?, ?, ?, ?, ?, ?, ?, 'registered', 'waiting')`,
-    [
-      parsed.data.uhid,
-      parsed.data.name,
-      parsed.data.age,
-      parsed.data.gender,
-      parsed.data.phone,
-      row.nextToken,
-      parsed.data.priority_level
-    ]
-  );
+  try {
+    const result = await db.run(
+      `INSERT INTO patients (uhid, name, age, gender, phone, token_number, priority_level, current_stage, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'registered', 'waiting')`,
+      [
+        parsed.data.uhid,
+        parsed.data.name,
+        parsed.data.age,
+        parsed.data.gender,
+        parsed.data.phone,
+        row.nextToken,
+        parsed.data.priority_level
+      ]
+    );
 
-  return res.status(201).json({ id: result.lastID, token_number: row.nextToken });
+    return res.status(201).json({ id: result.lastID, token_number: row.nextToken });
+  } catch (error) {
+    if (String(error?.message || '').includes('UNIQUE constraint failed: patients.uhid')) {
+      return res.status(409).json({ message: 'UHID already exists' });
+    }
+    throw error;
+  }
 };
 
 export const getPatients = async (_req, res) => {

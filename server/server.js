@@ -41,7 +41,12 @@ app.use('/api/dashboard', dashboardRoutes);
 
 app.use((err, _req, res, _next) => {
   console.error(err);
-  res.status(500).json({ message: 'Internal server error' });
+
+  if (String(err?.message || '').includes('FOREIGN KEY constraint failed')) {
+    return res.status(400).json({ message: 'Invalid reference to related record' });
+  }
+
+  return res.status(500).json({ message: 'Internal server error' });
 });
 
 const bootstrap = async () => {
@@ -52,4 +57,7 @@ const bootstrap = async () => {
   });
 };
 
-bootstrap();
+bootstrap().catch((error) => {
+  console.error('Failed to start server', error);
+  process.exit(1);
+});
